@@ -106,6 +106,7 @@
         let parts = null;
         let turn = false;
         let isNear = [];
+        let blocked = false;
 
         Model.id = 1;
         Model.board = null;
@@ -123,12 +124,11 @@
         const getMovePath = function (p, ax, ay) {
             const isStart = p.start?1:0;
             if(p.name=='pawn'){
-                console.log(isNear)
                 if(isNear.length>0){
                     return new Array(isStart+1).fill(0).map((target, i)=>{
                         return {
-                            x: p.x + ay + isStart*i*ay,
-                            y: p.y,
+                            x: blocked?-1:p.x + ay + isStart*i*ay,
+                            y: blocked?-1:p.y,
                         }
                     }).concat(isNear.map((x,i)=>{
                         return {
@@ -372,21 +372,33 @@
                     
                     const a = Model.board[col.x][col.y+1];
                     const b = Model.board[col.x][col.y-1];
+                    const c = Model.board[col.x][col.y];
+                    console.log(isNear)
                     if(piece.x+1<a.x || piece.x+1<b.x){
 
                     } else {
-                        if(a.name!=''){
+                        if(a.name!='' && a.master!=piece.master){
                             isNear.push(a);
-                        } else if(b.name!='') {
+                            blocked = false;
+                        }
+                        if(b.name!='' && b.master!=piece.master) {
                             isNear.push(b);
+                            blocked = false;
+                        }
+                        if(c.name != ''){
+                            if(Model.pick?.name == 'pawn')
+                            blocked = true;
                         }
                     }
                 })
+            } else {
+                blocked = false;
             }
             
             if(Model.pick == piece) {
                 Model.pick.isSelect = false;
                 Model.pick = null;
+                isNear = [];
                 // console.log('동일')
             } else {
                 if(Model.pick){
@@ -399,7 +411,7 @@
                             return;
                         }
                         for(let {x:vx,y:vy} of range){
-                            if(vx == x && vy == y && Model.pick.master != master){
+                            if(vx == x && vy == y && Model.pick.master != master && !blocked){
                                 turn = !turn;
                                 console.log('공격')
                                 isNear = [];
