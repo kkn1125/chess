@@ -100,10 +100,12 @@
                 return [].concat(topLeft, bottomLeft, topRight, bottomRight);
             }
         }
+        let get = [];
 
         let views = null;
         let parts = null;
         let turn = false;
+        let isNear = [];
 
         Model.id = 1;
         Model.board = null;
@@ -121,12 +123,27 @@
         const getMovePath = function (p, ax, ay) {
             const isStart = p.start?1:0;
             if(p.name=='pawn'){
-                return new Array(isStart+1).fill(0).map((target, i)=>{
-                    return {
-                        x: p.x + ay + isStart*i*ay,
-                        y: p.y,
-                    }
-                }).filter(x=>x.x>-1&&x.y>-1);
+                console.log(isNear)
+                if(isNear.length>0){
+                    return new Array(isStart+1).fill(0).map((target, i)=>{
+                        return {
+                            x: p.x + ay + isStart*i*ay,
+                            y: p.y,
+                        }
+                    }).concat(isNear.map((x,i)=>{
+                        return {
+                            x: x.x,
+                            y: x.y
+                        }
+                    })).filter(x=>x.x>-1&&x.y>-1);
+                } else {
+                    return new Array(isStart+1).fill(0).map((target, i)=>{
+                        return {
+                            x: p.x + ay + isStart*i*ay,
+                            y: p.y,
+                        }
+                    }).filter(x=>x.x>-1&&x.y>-1);
+                }
             } else if(p.name=='bishop'){
                 return new Array(7).fill(0).map((x,i)=>{
                     if(p.y + (i+1)>-1){
@@ -349,6 +366,23 @@
             this.initSelect();
             
             // console.log('선택')
+            if(piece.name=='pawn'){
+                piece.move(piece).forEach(col=>{
+                    const add = turn?-1:1;
+                    
+                    const a = Model.board[col.x][col.y+1];
+                    const b = Model.board[col.x][col.y-1];
+                    if(piece.x+1<a.x || piece.x+1<b.x){
+
+                    } else {
+                        if(a.name!=''){
+                            isNear.push(a);
+                        } else if(b.name!='') {
+                            isNear.push(b);
+                        }
+                    }
+                })
+            }
             
             if(Model.pick == piece) {
                 Model.pick.isSelect = false;
@@ -361,12 +395,14 @@
                         Model.pick = piece;
                     } else {
                         if(!this.isBlocked(Model.pick, piece)){
+                            isNear = [];
                             return;
                         }
                         for(let {x:vx,y:vy} of range){
                             if(vx == x && vy == y && Model.pick.master != master){
                                 turn = !turn;
                                 console.log('공격')
+                                isNear = [];
                                 piece.isDrop = true;
                                 const temp = Model.board[Model.pick.x][Model.pick.y];
                                 Model.board[Model.pick.x][Model.pick.y] = {
@@ -383,6 +419,7 @@
                                 Model.pick = null;
                             }
                         }
+                        isNear = [];
                         Model.pick = null;
                         this.renderGame();
                         return;
@@ -405,12 +442,14 @@
             if(this.isBlocked(Model.pick, origin)){
                 turn = !turn;
                 console.log('열림');
+                isNear = [];
             } else {
                 Model.pick.isSelect = false;
                 Model.pick = null;
                 this.renderGame();
                 return;
             }
+
             const temp = Model.board[piece.x][piece.y];
 
             Model.board[piece.x][piece.y] = {
@@ -428,6 +467,7 @@
 
             Model.pick = null;
             Model.board[origin.x][origin.y] = temp;
+
             this.renderGame();
         }
 
@@ -562,7 +602,6 @@
             app.innerHTML = '';
             app.insertAdjacentHTML('beforeend', parts.board.render(board));
             if(pick){
-                console.log(pick)
                 pick.move(pick).forEach(({x, y})=>{
                     const target = app.querySelector(`[data-x="${x>-1?x:pick.x}"][data-y="${y>-1?y:pick.y}"]`);
                     if(target) {
