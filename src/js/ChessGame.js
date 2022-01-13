@@ -493,6 +493,7 @@
                 Model.board.forEach(col=>col.forEach(r=>{
                     return r.name!=''?player[r.master].push(r):null
                 }));
+                turn = !turn;
             }
             console.log(player)
             views.renderGame(Model.board, Model.pick);
