@@ -1,60 +1,40 @@
-:root{
-    --ch-size: 52px;
+#app {
+    display: flex;
+    justify-content: center;
+    gap: 1rem;
+    margin-top: 15vh;
 }
 
-body{
-    background: rgb(90, 90, 90);
-}
-
-table{
-    text-align: center;
-    border-collapse: collapse;
-    margin: auto;
-    margin-top: 5em;
-    font-size: 200%;
+.b{
     font-weight: bold;
-    user-select: none;
 }
 
-table thead{
-    color: white;
+.list{
+    border-bottom: 1px solid rgba(0, 0, 0, 0.3);
+    padding-bottom: .5rem;
+    margin-bottom: .5rem;
 }
 
-table thead tr:not(:first-child){
-    font-size: 60%;
+.castle{
+    box-shadow: inset 0 0 0 5px coral;
 }
 
-table td{
-    position: relative;
+.blackdrop,.whitedrop{
+    display: flex;
+    flex-wrap: wrap;
 }
 
-table td span{
-    display: inline-block;
-    width: 100%;
-    height: 100%;
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    -webkit-transform: translate(-50%, -50%);
-    -moz-transform: translate(-50%, -50%);
-    -ms-transform: translate(-50%, -50%);
-    -o-transform: translate(-50%, -50%);
+.list:last-child{
+    border-bottom: none;
+    padding-bottom: 0;
+    margin-bottom: 0;
 }
 
-table td span:hover{
-    box-shadow: inset 0 0 9999px rgba(255, 153, 153, 0.5);
-    cursor: grab;
-}
-
-table td.move{
-    box-shadow: inset 0 0 9999px rgba(255, 118, 100, 0.5) !important;
-    cursor: pointer;
-}
-
-table td span.selected{
-    border: 3px solid rgb(194, 106, 55);
-    z-index: 100;
+.current, .options{
+    border: 1px solid rgba(0, 0, 0, 0.2);
+    padding: 1rem;
+    flex: 1 0 20%;
+    max-width: 25rem;
     border-radius: 1rem;
     -webkit-border-radius: 1rem;
     -moz-border-radius: 1rem;
@@ -62,38 +42,112 @@ table td span.selected{
     -o-border-radius: 1rem;
 }
 
-td{
-    width: var(--ch-size);
-    height: var(--ch-size);
+.zoom {
+    font-size: 150%;
 }
 
-tr:nth-child(odd) td:nth-child(odd){
-    background-color: rgb(200, 200, 200);
-}
-tr:nth-child(odd) td:nth-child(even){
-    background-color: rgb(228, 228, 228);
-}
-
-tr:nth-child(even) td:nth-child(even){
-    background-color: rgb(200, 200, 200);
+ul,ol{
+    margin: 0;
+    padding: 0;
+    list-style: none;
 }
 
-tr:nth-child(even) td:nth-child(odd){
-    background-color: rgb(228, 228, 228);
+.back{
+    border: none;
+    background: rgb(118 62 255);
+    color: white;
+    font-weight: bold;
+    padding: .3rem .6rem;
+    border-radius: .5rem;
+    -webkit-border-radius: .5rem;
+    -moz-border-radius: .5rem;
+    -ms-border-radius: .5rem;
+    -o-border-radius: .5rem;
 }
 
-tr:nth-child(odd) td.vertical:nth-child(odd){
-    background-color: rgb(150, 83, 44) !important;
+.turn{
+    color: white;
+    font-size: 70%;
+    font-weight: bold;
+    padding: .2rem .5rem;
+    background: rgb(114, 39, 255);
+    border-radius: .5rem;
+    -webkit-border-radius: .5rem;
+    -moz-border-radius: .5rem;
+    -ms-border-radius: .5rem;
+    -o-border-radius: .5rem;
+    text-transform: uppercase;
 }
 
-tr:nth-child(even) td.vertical:nth-child(odd){
-    background-color: rgb(194, 106, 55) !important;
+.turn.black{
+    background-color: black;
 }
 
-tr:nth-child(odd) td.horizontal:nth-child(odd){
-    background-color: rgb(150, 83, 44) !important;
+.turn.white{
+    background-color: white;
+    border: 1px solid rgba(0, 0, 0, 0.5);
+    color: black;
 }
 
-tr:nth-child(odd) td.horizontal:nth-child(even){
-    background-color: rgb(194, 106, 55) !important;
+@media (max-width: 767px) {
+    #app{
+        flex-direction: column;
+    }
+}
+
+table {
+    border-collapse: collapse;
+    text-align: center;
+}
+
+table thead th {
+    line-height: 2.5;
+}
+
+table td {
+    width: 52px;
+    height: 52px;
+    /* background: gray; */
+    border: 1px solid gray;
+    user-select: none;
+    font-size: 200%;
+}
+
+.options>div{
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+}
+
+.options>div>div:nth-child(2){
+    flex: 1 0 45%;
+}
+.options>div>div:nth-child(3){
+    flex: 1 0 45%;
+}
+
+.select {
+    box-shadow: inset 0 0 0 5px coral;
+    z-index: 100;
+}
+
+.path{
+    box-shadow: inset 0 0 0 5px red;
+}
+
+.attack{
+    box-shadow: inset 0 0 0 5px blue;
+}
+
+.test{
+    background-color: blue !important;
+}
+
+table td:hover {
+    background-color: rgba(255, 127, 80, 0.5) !important;
+}
+
+tr:nth-child(odd)>td:nth-child(odd),
+tr:nth-child(even)>td:nth-child(even) {
+    background-color: gray
 }
